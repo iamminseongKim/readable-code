@@ -21,7 +21,6 @@ public class MinesweeperGame {
     private static int gameStatus = 0; // 0: 게임 중, 1: 승리, -1: 패배
 
     public static void main(String[] args) {
-
         showGameStartComments();
         initializeGame();
 
@@ -40,7 +39,6 @@ public class MinesweeperGame {
             String cellInput = getCellInputFromUser();
             String userActionInput = getUserActionInputFromUser();
             actOnCell(cellInput, userActionInput);
-
         }
     }
 
@@ -60,10 +58,12 @@ public class MinesweeperGame {
                 changeGameStatusToLose();
                 return;
             }
+
             open(selectedRowIndex, selectedColIndex);
             checkIfGameIsOver();
             return;
         }
+
         System.out.println("잘못된 번호를 선택하셨습니다.");
     }
 
@@ -189,11 +189,13 @@ public class MinesweeperGame {
                 BOARD[row][col] = CLOSED_CELL_SIGN;
             }
         }
+
         for (int i = 0; i < LAND_MINE_COUNT; i++) {
             int col = new Random().nextInt(BOARD_COL_SIZE);
             int row = new Random().nextInt(BOARD_ROW_SIZE);
             LAND_MINES[row][col] = true; // 지뢰 초기화, isLandMineCell은 지뢰 밟았냐? 확인하는 메서드 두개 의미가 다름
         }
+
         for (int row = 0; row < BOARD_ROW_SIZE; row++) {
             for (int col = 0; col < BOARD_COL_SIZE; col++) {
                 int count = 0;
