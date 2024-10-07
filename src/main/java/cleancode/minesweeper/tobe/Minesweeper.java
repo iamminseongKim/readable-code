@@ -49,7 +49,7 @@ public class Minesweeper implements GameInitializable, GameRunnable {
 
                 CellPosition cellPosition = getCellInputFromUser();
                 UserAction userAction = getUserActionInputFromUser();
-                actOnCell(cellPosition, userActionInput);
+                actOnCell(cellPosition, userAction);
             } catch (GameException e) {
                 outputHandler.showExceptionMessage(e);
             } catch (Exception e) {
