@@ -111,7 +111,6 @@ public class GameBoard {
             }
         }
     }
-
     private void updateCellAt(CellPosition position, Cell cell) {
         board[position.getRowIndex()][position.getColIndex()] = cell;
     }
