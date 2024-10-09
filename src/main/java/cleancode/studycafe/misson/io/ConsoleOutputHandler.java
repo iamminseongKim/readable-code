@@ -36,11 +36,11 @@ public class ConsoleOutputHandler implements OutputHandler {
     }
 
     @Override
-    public void askLockerPass(StudyCafeLockerPass lockerPass) {
+    public void askLockerPass(String askLockerPass) {
         System.out.println();
         String askMessage = String.format(
             "사물함을 이용하시겠습니까? (%s)",
-            lockerPass.display()
+            askLockerPass
         );
 
         System.out.println(askMessage);
@@ -48,23 +48,29 @@ public class ConsoleOutputHandler implements OutputHandler {
     }
 
     @Override
-    public void showPassOrderSummary(StudyCafePass selectedPass, StudyCafeLockerPass lockerPass) {
+    public void showPassOrderSummary(String selectedPass, String lockerPass, int discountPrice, int totalPrice) {
         System.out.println();
         System.out.println("이용 내역");
-        System.out.println("이용권: " + selectedPass.display());
-        if (lockerPass != null) {
-            System.out.println("사물함: " + lockerPass.display());
+        System.out.println("이용권: " + selectedPass);
+
+        if (userSelectLockerPassCheck(lockerPass)) {
+            System.out.println("사물함: " + lockerPass);
         }
 
-        double discountRate = selectedPass.getDiscountRate();
-        int discountPrice = (int) (selectedPass.getPrice() * discountRate);
-        if (discountPrice > 0) {
+        if (hasDiscount(discountPrice)) {
             System.out.println("이벤트 할인 금액: " + discountPrice + "원");
         }
 
-        int totalPrice = selectedPass.getPrice() - discountPrice + (lockerPass != null ? lockerPass.getPrice() : 0);
         System.out.println("총 결제 금액: " + totalPrice + "원");
         System.out.println();
+    }
+
+    private boolean hasDiscount(int discountPrice) {
+        return discountPrice > 0;
+    }
+
+    private boolean userSelectLockerPassCheck(String lockerPass) {
+        return !lockerPass.isEmpty();
     }
 
     @Override

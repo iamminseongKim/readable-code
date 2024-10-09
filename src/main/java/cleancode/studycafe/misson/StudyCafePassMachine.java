@@ -4,6 +4,7 @@ import cleancode.studycafe.misson.exception.AppException;
 import cleancode.studycafe.misson.io.InputHandler;
 import cleancode.studycafe.misson.io.OutputHandler;
 import cleancode.studycafe.misson.io.file.FileHandler;
+import cleancode.studycafe.misson.model.Calculate;
 import cleancode.studycafe.misson.model.StudyCafeLockerPass;
 import cleancode.studycafe.misson.model.StudyCafePass;
 import cleancode.studycafe.misson.model.StudyCafePassType;
@@ -16,12 +17,14 @@ public class StudyCafePassMachine {
     private final OutputHandler outputHandler;
     private final List<StudyCafePass> studyCafePasses;
     private final List<StudyCafeLockerPass> lockerPasses;
+    private final Calculate calculate;
 
-    public StudyCafePassMachine(InputHandler inputHandler, OutputHandler outputHandler, FileHandler cafeFileHandler, FileHandler lockerFileHandler) {
+    public StudyCafePassMachine(InputHandler inputHandler, OutputHandler outputHandler, FileHandler cafeFileHandler, FileHandler lockerFileHandler, Calculate calculate) {
         this.inputHandler = inputHandler;
         this.outputHandler = outputHandler;
         this.studyCafePasses = (List<StudyCafePass>) cafeFileHandler.readFileAndMakePasses();
         this.lockerPasses = (List<StudyCafeLockerPass>) lockerFileHandler.readFileAndMakePasses();
+        this.calculate = calculate;
     }
 
     public void run() {
@@ -71,14 +74,25 @@ public class StudyCafePassMachine {
     }
 
     private void getStudyCafePassExpirationPeriodAndLocker(StudyCafePass selectedPass, StudyCafeLockerPass lockerPass) {
-        outputHandler.showPassOrderSummary(selectedPass, lockerPass);
+        calculatePriceAndShowToUser(selectedPass, lockerPass);
     }
+
+    private void getStudyCafePassExpirationPeriod(StudyCafePass selectedPass, StudyCafeLockerPass lockerPass) {
+        calculatePriceAndShowToUser(selectedPass, lockerPass);
+    }
+
+    private void calculatePriceAndShowToUser(StudyCafePass selectedPass, StudyCafeLockerPass lockerPass) {
+        int discountPrice = calculate.calculateDiscountPrice(selectedPass);
+        int totalPrice = calculate.calculateTotalPrice(selectedPass, lockerPass, discountPrice);
+        outputHandler.showPassOrderSummary(selectedPass.display(), lockerPass.display(), discountPrice, totalPrice);
+    }
+
 
     private boolean userSelectedLocker(StudyCafeLockerPass lockerPass) {
         boolean lockerSelection = false;
 
         if (lockerPass != null) {
-            outputHandler.askLockerPass(lockerPass);
+            outputHandler.askLockerPass(lockerPass.display());
             lockerSelection = inputHandler.getLockerSelection();
         }
         return lockerSelection;
@@ -93,10 +107,6 @@ public class StudyCafePassMachine {
     private void selectHouryOrWeeklyStudyTicket(StudyCafePassType studyCafePassType) {
         StudyCafePass selectedPass = getStudyCafePass(studyCafePassType);
         getStudyCafePassExpirationPeriod(selectedPass, null);
-    }
-
-    private void getStudyCafePassExpirationPeriod(StudyCafePass selectedPass, StudyCafeLockerPass lockerPass) {
-        outputHandler.showPassOrderSummary(selectedPass, lockerPass);
     }
 
     private List<StudyCafePass> getStudyCafePassesFrom(StudyCafePassType studyCafePassType) {

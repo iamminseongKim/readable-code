@@ -7,6 +7,7 @@ import cleancode.studycafe.misson.io.OutputHandler;
 import cleancode.studycafe.misson.io.file.FileHandler;
 import cleancode.studycafe.misson.io.file.StudyCafeLockerPassHandler;
 import cleancode.studycafe.misson.io.file.StudyCafePassFileHandler;
+import cleancode.studycafe.misson.model.Calculate;
 
 public class StudyCafeApplication {
 
@@ -18,7 +19,9 @@ public class StudyCafeApplication {
         FileHandler cafePassFileHandler = new StudyCafePassFileHandler();
         FileHandler lockerFileHandler = new StudyCafeLockerPassHandler();
 
-        StudyCafePassMachine studyCafePassMachine = new StudyCafePassMachine(inputHandler, outputHandler, cafePassFileHandler, lockerFileHandler);
+        Calculate calculate = new Calculate();
+
+        StudyCafePassMachine studyCafePassMachine = new StudyCafePassMachine(inputHandler, outputHandler, cafePassFileHandler, lockerFileHandler, calculate);
         studyCafePassMachine.run();
     }
 
