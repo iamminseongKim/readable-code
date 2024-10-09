@@ -13,11 +13,11 @@ import java.util.List;
 public class StudyCafeConfig {
 
 
-    private InputHandler inputHandler;
-    private OutputHandler outputHandler;
-    private FileHandler cafePassFileHandler;
-    private FileHandler lockerFileHandler;
-    private Caculate calculate;
+    private final InputHandler inputHandler;
+    private final OutputHandler outputHandler;
+    private final FileHandler cafePassFileHandler;
+    private final FileHandler lockerFileHandler;
+    private final Caculate calculate;
 
     public StudyCafeConfig(InputHandler inputHandler, OutputHandler outputHandler, FileHandler cafePassFileHandler, FileHandler lockerFileHandler, Caculate calculate) {
         this.inputHandler = inputHandler;
