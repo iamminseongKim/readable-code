@@ -6,6 +6,6 @@ public interface FileHandler {
 
     public static final String SPLIT_COMMA = ",";
 
-    public List<?> readFileAndMakePasses();
+    List<?> readFileAndMakePasses();
 
 }

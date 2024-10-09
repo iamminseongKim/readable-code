@@ -18,20 +18,16 @@ public class StudyCafeLockerPass {
         return new StudyCafeLockerPass(passType, duration, price);
     }
 
-    public static StudyCafeLockerPass getLockerPass(StudyCafePass selectedPass, List<StudyCafeLockerPass> lockerPasses) {
-        return lockerPasses.stream()
-                .filter(option -> option.isSamePassTypeAndDuration(selectedPass)
-                )
-                .findFirst()
-                .orElseThrow(()-> new IllegalArgumentException("잘못된 입력입니다."));
-    }
-
-    private boolean isSamePassTypeAndDuration(StudyCafePass selectedPass) {
-        return selectedPass.isSamePassType(this.passType) && selectedPass.isSameDuration(this.duration);
-    }
-
     public int getPrice() {
         return price;
+    }
+
+    public StudyCafePassType getPassType() {
+        return passType;
+    }
+
+    public int getDuration() {
+        return duration;
     }
 
     public String userSelectedLockerInfo() {

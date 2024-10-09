@@ -4,10 +4,7 @@ import cleancode.studycafe.misson.exception.AppException;
 import cleancode.studycafe.misson.io.InputHandler;
 import cleancode.studycafe.misson.io.OutputHandler;
 import cleancode.studycafe.misson.io.file.FileHandler;
-import cleancode.studycafe.misson.model.Calculate;
-import cleancode.studycafe.misson.model.StudyCafeLockerPass;
-import cleancode.studycafe.misson.model.StudyCafePass;
-import cleancode.studycafe.misson.model.StudyCafePassType;
+import cleancode.studycafe.misson.model.*;
 
 import java.util.List;
 
@@ -15,15 +12,15 @@ public class StudyCafePassMachine {
 
     private final InputHandler inputHandler;
     private final OutputHandler outputHandler;
-    private final List<StudyCafePass> studyCafePasses;
-    private final List<StudyCafeLockerPass> lockerPasses;
+    private final StudyCafePasses studyCafePasses;
+    private final StudyCafeLockerPasses lockerPasses;
     private final Calculate calculate;
 
-    public StudyCafePassMachine(InputHandler inputHandler, OutputHandler outputHandler, FileHandler cafeFileHandler, FileHandler lockerFileHandler, Calculate calculate) {
+    public StudyCafePassMachine(InputHandler inputHandler, OutputHandler outputHandler, StudyCafePasses studyCafePasses, StudyCafeLockerPasses lockerPasses, Calculate calculate) {
         this.inputHandler = inputHandler;
         this.outputHandler = outputHandler;
-        this.studyCafePasses = (List<StudyCafePass>) cafeFileHandler.readFileAndMakePasses();
-        this.lockerPasses = (List<StudyCafeLockerPass>) lockerFileHandler.readFileAndMakePasses();
+        this.studyCafePasses = studyCafePasses;
+        this.lockerPasses = lockerPasses;
         this.calculate = calculate;
     }
 
@@ -62,7 +59,7 @@ public class StudyCafePassMachine {
     private void selectFixedStudyTicket(StudyCafePassType studyCafePassType) {
 
         StudyCafePass selectedPass = getStudyCafePass(studyCafePassType);
-        StudyCafeLockerPass lockerPass = StudyCafeLockerPass.getLockerPass(selectedPass, lockerPasses);
+        StudyCafeLockerPass lockerPass = lockerPasses.getLockerPassFrom(selectedPass);
 
         boolean lockerSelection = userSelectedLocker(lockerPass);
 
@@ -99,7 +96,7 @@ public class StudyCafePassMachine {
     }
 
     private StudyCafePass getStudyCafePass(StudyCafePassType studyCafePassType) {
-        List<StudyCafePass> passes = getStudyCafePassesFrom(studyCafePassType);
+        List<StudyCafePass> passes = studyCafePasses.matchedTypeMadePasses(studyCafePassType);
         outputHandler.showPassListForSelection(passes);
         return inputHandler.getSelectPass(passes);
     }
@@ -109,9 +106,4 @@ public class StudyCafePassMachine {
         getStudyCafePassExpirationPeriod(selectedPass, null);
     }
 
-    private List<StudyCafePass> getStudyCafePassesFrom(StudyCafePassType studyCafePassType) {
-        return studyCafePasses.stream()
-                .filter(studyCafePass -> studyCafePass.getPassType() == studyCafePassType)
-                .toList();
-    }
 }

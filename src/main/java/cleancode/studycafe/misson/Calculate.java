@@ -1,4 +1,7 @@
-package cleancode.studycafe.misson.model;
+package cleancode.studycafe.misson;
+
+import cleancode.studycafe.misson.model.StudyCafeLockerPass;
+import cleancode.studycafe.misson.model.StudyCafePass;
 
 public class Calculate {
 
