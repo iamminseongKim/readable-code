@@ -4,6 +4,7 @@ import cleancode.minesweeper.tobe.cell.CellSnapshot;
 import cleancode.minesweeper.tobe.cell.CellSnapshotStatus;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public enum CellSignProvider implements CellSignProvidable {
 
@@ -58,10 +59,15 @@ public enum CellSignProvider implements CellSignProvidable {
 
 
     public static String findCellSignFrom(CellSnapshot snapshot) {
+
+        CellSignProvider cellSignProvider = findBy(snapshot);
+        return cellSignProvider.provide(snapshot);
+    }
+
+    private static CellSignProvider findBy(CellSnapshot snapshot) {
         return Arrays.stream(values())
                 .filter(provider -> provider.supports(snapshot))
                 .findFirst()
-                .map(provider -> provider.provide(snapshot))
                 .orElseThrow(() -> new IllegalArgumentException("확인할 수 없는 셀 입니다."));
     }
 }
