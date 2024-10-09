@@ -10,6 +10,8 @@ import java.util.Scanner;
 public class ConsoleInputHandler implements InputHandler {
 
     private static final Scanner SCANNER = new Scanner(System.in);
+    private static final String USE_LOCKER = "1";
+    private static final String NON_USE_LOCKER = "2";
 
     @Override
     public StudyCafePassType getPassTypeSelectingUserAction() {
@@ -31,7 +33,16 @@ public class ConsoleInputHandler implements InputHandler {
     @Override
     public boolean getLockerSelection() {
         String userInput = getUserInput();
-        return "1".equals(userInput);
+
+        if (USE_LOCKER.equals(userInput)) {
+            return true;
+        };
+
+        if (NON_USE_LOCKER.equals(userInput)) {
+            return false;
+        }
+
+        throw new AppException("잘못된 입력입니다.");
     }
 
 }
