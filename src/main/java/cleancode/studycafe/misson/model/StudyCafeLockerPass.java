@@ -34,7 +34,7 @@ public class StudyCafeLockerPass {
         return price;
     }
 
-    public String display() {
+    public String userSelectedLockerInfo() {
         if (passType == StudyCafePassType.FIXED) {
             return String.format("%s주권 - %d원", duration, price);
         }

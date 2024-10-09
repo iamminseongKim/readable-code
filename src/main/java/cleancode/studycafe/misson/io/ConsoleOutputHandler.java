@@ -1,6 +1,5 @@
 package cleancode.studycafe.misson.io;
 
-import cleancode.studycafe.misson.model.StudyCafeLockerPass;
 import cleancode.studycafe.misson.model.StudyCafePass;
 
 import java.util.List;
@@ -31,7 +30,7 @@ public class ConsoleOutputHandler implements OutputHandler {
         System.out.println("이용권 목록");
         for (int index = 0; index < passes.size(); index++) {
             StudyCafePass pass = passes.get(index);
-            System.out.println(String.format("%s. ", index + 1) + pass.display());
+            System.out.println(String.format("%s. ", index + 1) + pass.userSelectedPassInfo());
         }
     }
 

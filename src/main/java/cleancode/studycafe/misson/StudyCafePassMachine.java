@@ -84,7 +84,7 @@ public class StudyCafePassMachine {
     private void calculatePriceAndShowToUser(StudyCafePass selectedPass, StudyCafeLockerPass lockerPass) {
         int discountPrice = calculate.calculateDiscountPrice(selectedPass);
         int totalPrice = calculate.calculateTotalPrice(selectedPass, lockerPass, discountPrice);
-        outputHandler.showPassOrderSummary(selectedPass.display(), lockerPass.display(), discountPrice, totalPrice);
+        outputHandler.showPassOrderSummary(selectedPass.userSelectedPassInfo(), lockerPass.userSelectedLockerInfo(), discountPrice, totalPrice);
     }
 
 
@@ -92,7 +92,7 @@ public class StudyCafePassMachine {
         boolean lockerSelection = false;
 
         if (lockerPass != null) {
-            outputHandler.askLockerPass(lockerPass.display());
+            outputHandler.askLockerPass(lockerPass.userSelectedLockerInfo());
             lockerSelection = inputHandler.getLockerSelection();
         }
         return lockerSelection;
