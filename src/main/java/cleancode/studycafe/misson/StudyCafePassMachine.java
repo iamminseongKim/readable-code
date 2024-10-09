@@ -14,14 +14,14 @@ public class StudyCafePassMachine {
     private final OutputHandler outputHandler;
     private final StudyCafePasses studyCafePasses;
     private final StudyCafeLockerPasses lockerPasses;
-    private final Calculate calculate;
+    private final Caculate calculate;
 
-    public StudyCafePassMachine(InputHandler inputHandler, OutputHandler outputHandler, StudyCafePasses studyCafePasses, StudyCafeLockerPasses lockerPasses, Calculate calculate) {
-        this.inputHandler = inputHandler;
-        this.outputHandler = outputHandler;
-        this.studyCafePasses = studyCafePasses;
-        this.lockerPasses = lockerPasses;
-        this.calculate = calculate;
+    public StudyCafePassMachine(StudyCafeConfig studyCafeConfig) {
+        this.inputHandler = studyCafeConfig.getInputHandler();
+        this.outputHandler = studyCafeConfig.getOutputHandler();
+        this.studyCafePasses = studyCafeConfig.getStudyCafePasses();
+        this.lockerPasses = studyCafeConfig.getLockerPasses();
+        this.calculate = studyCafeConfig.getCalculate();
     }
 
     public void run() {
@@ -79,8 +79,11 @@ public class StudyCafePassMachine {
     }
 
     private void calculatePriceAndShowToUser(StudyCafePass selectedPass, StudyCafeLockerPass lockerPass) {
-        int discountPrice = calculate.calculateDiscountPrice(selectedPass);
-        int totalPrice = calculate.calculateTotalPrice(selectedPass, lockerPass, discountPrice);
+        double discountRate = selectedPass.getDiscountRate();
+        int price = selectedPass.getPrice();
+        int extraCost = lockerPass.getPrice();
+        int discountPrice = calculate.calculateDiscountPrice(price, discountRate);
+        int totalPrice = calculate.calculateTotalPrice(price, discountPrice, extraCost);
         outputHandler.showPassOrderSummary(selectedPass.userSelectedPassInfo(), lockerPass.userSelectedLockerInfo(), discountPrice, totalPrice);
     }
 

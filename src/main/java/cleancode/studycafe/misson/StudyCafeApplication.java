@@ -18,17 +18,16 @@ public class StudyCafeApplication {
 
     public static void main(String[] args) {
 
-        InputHandler inputHandler = new ConsoleInputHandler();
-        OutputHandler outputHandler = new ConsoleOutputHandler();
 
-        FileHandler cafePassFileHandler = new StudyCafePassFileHandler();
-        FileHandler lockerFileHandler = new StudyCafeLockerPassHandler();
+        StudyCafeConfig studyCafeConfig = new StudyCafeConfig(
+                new ConsoleInputHandler(),
+                new ConsoleOutputHandler(),
+                new StudyCafePassFileHandler(),
+                new StudyCafeLockerPassHandler(),
+                new StudyCafeCalculate()
+        );
 
-        StudyCafePasses passes =  StudyCafePasses.of((List<StudyCafePass>) cafePassFileHandler.readFileAndMakePasses());
-        StudyCafeLockerPasses lockerPasses = StudyCafeLockerPasses.of((List<StudyCafeLockerPass>) lockerFileHandler.readFileAndMakePasses());
-        Calculate calculate = new Calculate();
-
-        StudyCafePassMachine studyCafePassMachine = new StudyCafePassMachine(inputHandler, outputHandler, passes, lockerPasses, calculate);
+        StudyCafePassMachine studyCafePassMachine = new StudyCafePassMachine(studyCafeConfig);
         studyCafePassMachine.run();
     }
 
