@@ -3,7 +3,7 @@ package cleancode.studycafe.misson;
 import cleancode.studycafe.misson.exception.AppException;
 import cleancode.studycafe.misson.io.InputHandler;
 import cleancode.studycafe.misson.io.OutputHandler;
-import cleancode.studycafe.misson.io.file.StudyCafeFileHandler;
+import cleancode.studycafe.misson.io.file.FileHandler;
 import cleancode.studycafe.misson.model.StudyCafeLockerPass;
 import cleancode.studycafe.misson.model.StudyCafePass;
 import cleancode.studycafe.misson.model.StudyCafePassType;
@@ -17,11 +17,11 @@ public class StudyCafePassMachine {
     private final List<StudyCafePass> studyCafePasses;
     private final List<StudyCafeLockerPass> lockerPasses;
 
-    public StudyCafePassMachine(InputHandler inputHandler, OutputHandler outputHandler, StudyCafeFileHandler studyCafeFileHandler) {
+    public StudyCafePassMachine(InputHandler inputHandler, OutputHandler outputHandler, FileHandler cafeFileHandler, FileHandler lockerFileHandler) {
         this.inputHandler = inputHandler;
         this.outputHandler = outputHandler;
-        this.studyCafePasses = studyCafeFileHandler.readStudyCafePasses();
-        this.lockerPasses = studyCafeFileHandler.readLockerPasses();
+        this.studyCafePasses = (List<StudyCafePass>) cafeFileHandler.readFileAndMakePasses();
+        this.lockerPasses = (List<StudyCafeLockerPass>) lockerFileHandler.readFileAndMakePasses();
     }
 
     public void run() {
