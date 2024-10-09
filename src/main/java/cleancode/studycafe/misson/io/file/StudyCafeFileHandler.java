@@ -1,4 +1,4 @@
-package cleancode.studycafe.misson.io;
+package cleancode.studycafe.misson.io.file;
 
 import cleancode.studycafe.misson.model.StudyCafeLockerPass;
 import cleancode.studycafe.misson.model.StudyCafePass;

@@ -1,9 +1,11 @@
 package cleancode.studycafe.misson;
 
 import cleancode.studycafe.misson.exception.AppException;
+import cleancode.studycafe.misson.io.ConsoleInputHandler;
+import cleancode.studycafe.misson.io.ConsoleOutputHandler;
 import cleancode.studycafe.misson.io.InputHandler;
 import cleancode.studycafe.misson.io.OutputHandler;
-import cleancode.studycafe.misson.io.StudyCafeFileHandler;
+import cleancode.studycafe.misson.io.file.StudyCafeFileHandler;
 import cleancode.studycafe.misson.model.StudyCafeLockerPass;
 import cleancode.studycafe.misson.model.StudyCafePass;
 import cleancode.studycafe.misson.model.StudyCafePassType;
