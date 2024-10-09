@@ -3,7 +3,6 @@ package cleancode.studycafe.misson;
 import cleancode.studycafe.misson.exception.AppException;
 import cleancode.studycafe.misson.io.InputHandler;
 import cleancode.studycafe.misson.io.OutputHandler;
-import cleancode.studycafe.misson.io.file.FileHandler;
 import cleancode.studycafe.misson.model.*;
 
 import java.util.List;
@@ -66,7 +65,7 @@ public class StudyCafePassMachine {
         if (lockerSelection) {
             getStudyCafePassExpirationPeriodAndLocker(selectedPass, lockerPass);
         } else {
-            getStudyCafePassExpirationPeriod(selectedPass, null);
+            getStudyCafePassExpirationPeriod(selectedPass);
         }
     }
 
@@ -74,17 +73,29 @@ public class StudyCafePassMachine {
         calculatePriceAndShowToUser(selectedPass, lockerPass);
     }
 
-    private void getStudyCafePassExpirationPeriod(StudyCafePass selectedPass, StudyCafeLockerPass lockerPass) {
-        calculatePriceAndShowToUser(selectedPass, lockerPass);
+    private void getStudyCafePassExpirationPeriod(StudyCafePass selectedPass) {
+        calculatePriceAndShowToUser(selectedPass, null);
     }
 
     private void calculatePriceAndShowToUser(StudyCafePass selectedPass, StudyCafeLockerPass lockerPass) {
         double discountRate = selectedPass.getDiscountRate();
         int price = selectedPass.getPrice();
-        int extraCost = lockerPass.getPrice();
         int discountPrice = calculate.calculateDiscountPrice(price, discountRate);
+
+        int extraCost = getExtraCostFrom(lockerPass);
+        String lockerInfo = getLockerInfoFrom(lockerPass);
+
         int totalPrice = calculate.calculateTotalPrice(price, discountPrice, extraCost);
-        outputHandler.showPassOrderSummary(selectedPass.userSelectedPassInfo(), lockerPass.userSelectedLockerInfo(), discountPrice, totalPrice);
+
+        outputHandler.showPassOrderSummary(selectedPass.userSelectedPassInfo(), lockerInfo, discountPrice, totalPrice);
+    }
+
+    private String getLockerInfoFrom(StudyCafeLockerPass lockerPass) {
+        return (lockerPass != null) ? lockerPass.userSelectedLockerInfo() : "";
+    }
+
+    private int getExtraCostFrom(StudyCafeLockerPass lockerPass) {
+        return (lockerPass != null) ? lockerPass.getPrice() : 0;
     }
 
 
@@ -106,7 +117,7 @@ public class StudyCafePassMachine {
 
     private void selectHouryOrWeeklyStudyTicket(StudyCafePassType studyCafePassType) {
         StudyCafePass selectedPass = getStudyCafePass(studyCafePassType);
-        getStudyCafePassExpirationPeriod(selectedPass, null);
+        getStudyCafePassExpirationPeriod(selectedPass);
     }
 
 }
