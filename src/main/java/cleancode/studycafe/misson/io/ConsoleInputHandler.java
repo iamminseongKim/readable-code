@@ -13,30 +13,24 @@ public class ConsoleInputHandler implements InputHandler {
 
     @Override
     public StudyCafePassType getPassTypeSelectingUserAction() {
-        String userInput = SCANNER.nextLine();
+        String userInput = getUserInput();
+        return StudyCafePassType.from(userInput);
+    }
 
-        if ("1".equals(userInput)) {
-            return StudyCafePassType.HOURLY;
-        }
-        if ("2".equals(userInput)) {
-            return StudyCafePassType.WEEKLY;
-        }
-        if ("3".equals(userInput)) {
-            return StudyCafePassType.FIXED;
-        }
-        throw new AppException("잘못된 입력입니다.");
+    private String getUserInput() {
+        return SCANNER.nextLine();
     }
 
     @Override
     public StudyCafePass getSelectPass(List<StudyCafePass> passes) {
-        String userInput = SCANNER.nextLine();
+        String userInput = getUserInput();
         int selectedIndex = Integer.parseInt(userInput) - 1;
         return passes.get(selectedIndex);
     }
 
     @Override
     public boolean getLockerSelection() {
-        String userInput = SCANNER.nextLine();
+        String userInput = getUserInput();
         return "1".equals(userInput);
     }
 

@@ -1,8 +1,6 @@
 package cleancode.studycafe.misson;
 
 import cleancode.studycafe.misson.exception.AppException;
-import cleancode.studycafe.misson.io.ConsoleInputHandler;
-import cleancode.studycafe.misson.io.ConsoleOutputHandler;
 import cleancode.studycafe.misson.io.InputHandler;
 import cleancode.studycafe.misson.io.OutputHandler;
 import cleancode.studycafe.misson.io.file.StudyCafeFileHandler;
@@ -26,31 +24,38 @@ public class StudyCafePassMachine {
 
     public void run() {
         try {
-            outputHandler.showWelcomeMessage();
-            outputHandler.showAnnouncement();
+            showWelcomeMessage();
+            operateStudyCafeCounter(getStudyCafePassTypeFromUserInput());
 
-            outputHandler.askPassTypeSelection();
-            StudyCafePassType studyCafePassType = inputHandler.getPassTypeSelectingUserAction();
-
-            if (studyCafePassType == StudyCafePassType.HOURLY) {
-                selectHouryOrWeeklyStudyTicket(StudyCafePassType.HOURLY);
-                return;
-            }
-
-            if (studyCafePassType == StudyCafePassType.WEEKLY) {
-                selectHouryOrWeeklyStudyTicket(StudyCafePassType.WEEKLY);
-                return;
-            }
-
-            if (studyCafePassType == StudyCafePassType.FIXED) {
-                selectFixedStudyTicket();
-                return;
-            }
         } catch (AppException e) {
             outputHandler.showSimpleMessage(e.getMessage());
         } catch (Exception e) {
             outputHandler.showSimpleMessage("알 수 없는 오류가 발생했습니다.");
         }
+    }
+
+    private void showWelcomeMessage() {
+        outputHandler.showWelcomeMessage();
+        outputHandler.showAnnouncement();
+        outputHandler.askPassTypeSelection();
+    }
+
+    private StudyCafePassType getStudyCafePassTypeFromUserInput() {
+        return inputHandler.getPassTypeSelectingUserAction();
+    }
+
+    private void operateStudyCafeCounter(StudyCafePassType studyCafePassType) {
+        if (studyCafePassType == StudyCafePassType.HOURLY) {
+            selectHouryOrWeeklyStudyTicket(StudyCafePassType.HOURLY);
+            return;
+        }
+
+        if (studyCafePassType == StudyCafePassType.WEEKLY) {
+            selectHouryOrWeeklyStudyTicket(StudyCafePassType.WEEKLY);
+            return;
+        }
+
+        selectFixedStudyTicket();
     }
 
     private void selectFixedStudyTicket() {
