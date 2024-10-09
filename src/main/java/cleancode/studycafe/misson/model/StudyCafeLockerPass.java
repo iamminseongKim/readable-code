@@ -1,5 +1,7 @@
 package cleancode.studycafe.misson.model;
 
+import java.util.List;
+
 public class StudyCafeLockerPass {
 
     private final StudyCafePassType passType;
@@ -14,6 +16,15 @@ public class StudyCafeLockerPass {
 
     public static StudyCafeLockerPass of(StudyCafePassType passType, int duration, int price) {
         return new StudyCafeLockerPass(passType, duration, price);
+    }
+
+    public static StudyCafeLockerPass getLockerPass(StudyCafePass selectedPass, List<StudyCafeLockerPass> lockerPasses) {
+        return lockerPasses.stream()
+                .filter(option -> option.getPassType() == selectedPass.getPassType()
+                        && option.getDuration() == selectedPass.getDuration()
+                )
+                .findFirst()
+                .orElseThrow(()-> new IllegalArgumentException("잘못된 입력입니다."));
     }
 
     public StudyCafePassType getPassType() {
@@ -40,5 +51,6 @@ public class StudyCafeLockerPass {
         }
         return "";
     }
+
 
 }

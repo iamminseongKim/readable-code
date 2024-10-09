@@ -59,7 +59,7 @@ public class StudyCafePassMachine {
     private void selectFixedStudyTicket(StudyCafePassType studyCafePassType) {
 
         StudyCafePass selectedPass = getStudyCafePass(studyCafePassType);
-        StudyCafeLockerPass lockerPass = getLockerPass(selectedPass);
+        StudyCafeLockerPass lockerPass = StudyCafeLockerPass.getLockerPass(selectedPass, lockerPasses);
 
         boolean lockerSelection = userSelectedLocker(lockerPass);
 
@@ -82,15 +82,6 @@ public class StudyCafePassMachine {
             lockerSelection = inputHandler.getLockerSelection();
         }
         return lockerSelection;
-    }
-
-    private StudyCafeLockerPass getLockerPass(StudyCafePass selectedPass) {
-        return lockerPasses.stream()
-                .filter(option -> option.getPassType() == selectedPass.getPassType()
-                                && option.getDuration() == selectedPass.getDuration()
-                )
-                .findFirst()
-                .orElseThrow(()-> new IllegalArgumentException("잘못된 입력입니다."));
     }
 
     private StudyCafePass getStudyCafePass(StudyCafePassType studyCafePassType) {
