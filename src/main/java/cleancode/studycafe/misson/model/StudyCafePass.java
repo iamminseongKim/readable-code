@@ -22,10 +22,6 @@ public class StudyCafePass {
         return passType;
     }
 
-    public int getDuration() {
-        return duration;
-    }
-
     public int getPrice() {
         return price;
     }
@@ -47,4 +43,11 @@ public class StudyCafePass {
         return "";
     }
 
+    public boolean isSamePassType(StudyCafePassType passType) {
+        return this.passType == passType;
+    }
+
+    public boolean isSameDuration(int duration) {
+        return this.duration == duration;
+    }
 }
