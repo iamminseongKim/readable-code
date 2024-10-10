@@ -1,7 +1,5 @@
 package cleancode.studycafe.misson.model;
 
-import java.util.List;
-
 public class StudyCafeLockerPass {
 
     private final StudyCafePassType passType;
@@ -22,20 +20,16 @@ public class StudyCafeLockerPass {
         return price;
     }
 
-    public StudyCafePassType getPassType() {
-        return passType;
-    }
-
     public int getDuration() {
         return duration;
     }
 
-    public String userSelectedLockerInfo() {
-        if (passType == StudyCafePassType.FIXED) {
-            return String.format("%s주권 - %d원", duration, price);
-        }
-        return "";
+
+    public boolean isSamePassType(StudyCafePass selectedPass) {
+        return selectedPass.isSamePassType(passType);
     }
 
-
+    public boolean isSameDuration(StudyCafePass selectedPass) {
+        return selectedPass.isSameDuration(duration);
+    }
 }

@@ -23,8 +23,7 @@ public class StudyCafeApplication {
                 new ConsoleInputHandler(),
                 new ConsoleOutputHandler(),
                 new StudyCafePassFileHandler(),
-                new StudyCafeLockerPassHandler(),
-                new StudyCafeCalculate()
+                new StudyCafeLockerPassHandler()
         );
 
         StudyCafePassMachine studyCafePassMachine = new StudyCafePassMachine(studyCafeConfig);

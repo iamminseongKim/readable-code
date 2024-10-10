@@ -4,6 +4,10 @@ import cleancode.studycafe.misson.exception.AppException;
 import cleancode.studycafe.misson.io.InputHandler;
 import cleancode.studycafe.misson.io.OutputHandler;
 import cleancode.studycafe.misson.model.*;
+import cleancode.studycafe.misson.model.dto.PassCost;
+import cleancode.studycafe.misson.model.dto.PassCostBuilder;
+import cleancode.studycafe.misson.pass.PassService;
+import cleancode.studycafe.misson.pass.PassServiceFactory;
 
 import java.util.List;
 
@@ -11,22 +15,34 @@ public class StudyCafePassMachine {
 
     private final InputHandler inputHandler;
     private final OutputHandler outputHandler;
-    private final StudyCafePasses studyCafePasses;
-    private final StudyCafeLockerPasses lockerPasses;
-    private final Caculate calculate;
+    private final PassServiceFactory passServiceFactory;
+
+    private PassService passService;
 
     public StudyCafePassMachine(StudyCafeConfig studyCafeConfig) {
         this.inputHandler = studyCafeConfig.getInputHandler();
         this.outputHandler = studyCafeConfig.getOutputHandler();
-        this.studyCafePasses = studyCafeConfig.getStudyCafePasses();
-        this.lockerPasses = studyCafeConfig.getLockerPasses();
-        this.calculate = studyCafeConfig.getCalculate();
+        this.passServiceFactory = studyCafeConfig.getPassServiceFactory();
     }
 
     public void run() {
         try {
+            // 웰컴 메시지
             showWelcomeMessage();
-            operateStudyCafeCounter(getStudyCafePassTypeFromUserInput());
+
+            // 이용권 선택
+            StudyCafePassType studyCafePassTypeFromUserInput = getStudyCafePassTypeFromUserInput();
+            StudyCafePass studyCafePass = userChooseStudyCafePass(studyCafePassTypeFromUserInput);
+
+            // 라커 목록 가져오기
+            StudyCafeLockerPass studyCafeLockerPass = getStudyCafeLockerPassFrom(studyCafePassTypeFromUserInput, studyCafePass);
+
+            // 계산
+            PassCost userPassCost = userPassTotalPrice(studyCafePass, studyCafeLockerPass);
+
+            // 영수증 출력
+            outputHandler.showPassOrderSummary(studyCafePass, studyCafeLockerPass, userPassCost);
+
 
         } catch (AppException e) {
             outputHandler.showSimpleMessage(e.getMessage());
@@ -42,82 +58,63 @@ public class StudyCafePassMachine {
     }
 
     private StudyCafePassType getStudyCafePassTypeFromUserInput() {
-        return inputHandler.getPassTypeSelectingUserAction();
+        StudyCafePassType studyCafePassTypeFromUserInput = inputHandler.getPassTypeSelectingUserAction();
+        passService = passServiceFactory.getPassService(studyCafePassTypeFromUserInput);
+        return studyCafePassTypeFromUserInput;
     }
 
-    private void operateStudyCafeCounter(StudyCafePassType studyCafePassType) {
+    private StudyCafePass userChooseStudyCafePass(StudyCafePassType studyCafePassType) {
 
-        if (StudyCafePassType.FIXED == studyCafePassType) {
-            selectFixedStudyTicket(studyCafePassType);
-            return;
+        List<StudyCafePass> studyCafePassList = passService.getStudyCafePassListFrom(studyCafePassType);
+        outputHandler.showPassListForSelection(studyCafePassList);
+
+        return inputHandler.getSelectPass(studyCafePassList);
+    }
+
+    private StudyCafeLockerPass getStudyCafeLockerPassFrom(StudyCafePassType userPassType, StudyCafePass studyCafePass) {
+        if (userPassType == StudyCafePassType.FIXED) {
+            return makeStudyCafeLockerPass(studyCafePass);
+        }
+        return notMakeStudyCafeLockerPass(userPassType);
+    }
+
+    private StudyCafeLockerPass makeStudyCafeLockerPass(StudyCafePass studyCafePass) {
+        return passService.getLockerPassFrom(studyCafePass);
+    }
+
+    private StudyCafeLockerPass notMakeStudyCafeLockerPass(StudyCafePassType userPassType) {
+        return StudyCafeLockerPass.of(userPassType, 0, 0);
+    }
+
+    private PassCost userPassTotalPrice(StudyCafePass studyCafePass, StudyCafeLockerPass studyCafeLockerPass) {
+        //라커 구매 및 총액
+        if (userWantsLocker(studyCafePass, studyCafeLockerPass)) {
+            return getPassCost(studyCafePass, studyCafeLockerPass);
         }
 
-        selectHouryOrWeeklyStudyTicket(studyCafePassType);
+        return getPassCost(studyCafePass, null);
     }
 
-    private void selectFixedStudyTicket(StudyCafePassType studyCafePassType) {
-
-        StudyCafePass selectedPass = getStudyCafePass(studyCafePassType);
-        StudyCafeLockerPass lockerPass = lockerPasses.getLockerPassFrom(selectedPass);
-
-        boolean lockerSelection = userSelectedLocker(lockerPass);
-
-        if (lockerSelection) {
-            getStudyCafePassExpirationPeriodAndLocker(selectedPass, lockerPass);
-        } else {
-            getStudyCafePassExpirationPeriod(selectedPass);
+    private boolean userWantsLocker(StudyCafePass studyCafePass, StudyCafeLockerPass studyCafeLockerPass) {
+        if (studyCafeLockerPass == null || studyCafePass.isSamePassType(StudyCafePassType.FIXED)) {
+            return false;
         }
+        outputHandler.askLockerPass(studyCafeLockerPass);
+        return inputHandler.getLockerSelection();
     }
 
-    private void getStudyCafePassExpirationPeriodAndLocker(StudyCafePass selectedPass, StudyCafeLockerPass lockerPass) {
-        calculatePriceAndShowToUser(selectedPass, lockerPass);
-    }
+    private PassCost getPassCost(StudyCafePass studyCafePass, StudyCafeLockerPass studyCafeLockerPass) {
+        int extraCost = 0;
 
-    private void getStudyCafePassExpirationPeriod(StudyCafePass selectedPass) {
-        calculatePriceAndShowToUser(selectedPass, null);
-    }
-
-    private void calculatePriceAndShowToUser(StudyCafePass selectedPass, StudyCafeLockerPass lockerPass) {
-        double discountRate = selectedPass.getDiscountRate();
-        int price = selectedPass.getPrice();
-        int discountPrice = calculate.calculateDiscountPrice(price, discountRate);
-
-        int extraCost = getExtraCostFrom(lockerPass);
-        String lockerInfo = getLockerInfoFrom(lockerPass);
-
-        int totalPrice = calculate.calculateTotalPrice(price, discountPrice, extraCost);
-
-        outputHandler.showPassOrderSummary(selectedPass.userSelectedPassInfo(), lockerInfo, discountPrice, totalPrice);
-    }
-
-    private String getLockerInfoFrom(StudyCafeLockerPass lockerPass) {
-        return (lockerPass != null) ? lockerPass.userSelectedLockerInfo() : "";
-    }
-
-    private int getExtraCostFrom(StudyCafeLockerPass lockerPass) {
-        return (lockerPass != null) ? lockerPass.getPrice() : 0;
-    }
-
-
-    private boolean userSelectedLocker(StudyCafeLockerPass lockerPass) {
-        boolean lockerSelection = false;
-
-        if (lockerPass != null) {
-            outputHandler.askLockerPass(lockerPass.userSelectedLockerInfo());
-            lockerSelection = inputHandler.getLockerSelection();
+        if (studyCafeLockerPass != null) {
+            extraCost = studyCafeLockerPass.getPrice();
         }
-        return lockerSelection;
-    }
 
-    private StudyCafePass getStudyCafePass(StudyCafePassType studyCafePassType) {
-        List<StudyCafePass> passes = studyCafePasses.matchedTypeMadePasses(studyCafePassType);
-        outputHandler.showPassListForSelection(passes);
-        return inputHandler.getSelectPass(passes);
-    }
-
-    private void selectHouryOrWeeklyStudyTicket(StudyCafePassType studyCafePassType) {
-        StudyCafePass selectedPass = getStudyCafePass(studyCafePassType);
-        getStudyCafePassExpirationPeriod(selectedPass);
+        return new PassCostBuilder()
+                .defaultCost(studyCafePass.getPrice())
+                .discountRate(studyCafePass.getDiscountRate())
+                .extraCost(extraCost)
+                .build();
     }
 
 }

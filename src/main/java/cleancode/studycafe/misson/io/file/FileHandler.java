@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface FileHandler {
 
-    public static final String SPLIT_COMMA = ",";
+    String SPLIT_COMMA = ",";
 
     List<?> readFileAndMakePasses();
 

@@ -27,7 +27,14 @@ public class ConsoleInputHandler implements InputHandler {
     public StudyCafePass getSelectPass(List<StudyCafePass> passes) {
         String userInput = getUserInput();
         int selectedIndex = Integer.parseInt(userInput) - 1;
+        selectPassPeriodFromUserInput(passes, selectedIndex);
         return passes.get(selectedIndex);
+    }
+
+    private void selectPassPeriodFromUserInput(List<StudyCafePass> passes, int selectedIndex) {
+        if (passes.size() < selectedIndex || selectedIndex < 0) {
+            throw new AppException("잘못된 입력입니다");
+        }
     }
 
     @Override
@@ -36,7 +43,7 @@ public class ConsoleInputHandler implements InputHandler {
 
         if (USE_LOCKER.equals(userInput)) {
             return true;
-        };
+        }
 
         if (NON_USE_LOCKER.equals(userInput)) {
             return false;

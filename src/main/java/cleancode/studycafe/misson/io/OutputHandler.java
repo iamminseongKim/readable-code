@@ -1,6 +1,8 @@
 package cleancode.studycafe.misson.io;
 
+import cleancode.studycafe.misson.model.StudyCafeLockerPass;
 import cleancode.studycafe.misson.model.StudyCafePass;
+import cleancode.studycafe.misson.model.dto.PassCost;
 
 import java.util.List;
 
@@ -14,9 +16,10 @@ public interface OutputHandler {
 
     void showPassListForSelection(List<StudyCafePass> passes);
 
-    void askLockerPass(String askLockerPass);
+    void askLockerPass(StudyCafeLockerPass askLockerPass);
 
-    void showPassOrderSummary(String selectedPass, String lockerPass, int discountPrice, int totalPrice);
+    void showPassOrderSummary(StudyCafePass selectedPass, StudyCafeLockerPass lockerPass, PassCost passCost);
 
     void showSimpleMessage(String message);
+
 }

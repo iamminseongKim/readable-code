@@ -1,6 +1,9 @@
 package cleancode.studycafe.misson.io;
 
+import cleancode.studycafe.misson.model.StudyCafeLockerPass;
 import cleancode.studycafe.misson.model.StudyCafePass;
+import cleancode.studycafe.misson.model.StudyCafePassType;
+import cleancode.studycafe.misson.model.dto.PassCost;
 
 import java.util.List;
 
@@ -30,16 +33,16 @@ public class ConsoleOutputHandler implements OutputHandler {
         System.out.println("이용권 목록");
         for (int index = 0; index < passes.size(); index++) {
             StudyCafePass pass = passes.get(index);
-            System.out.println(String.format("%s. ", index + 1) + pass.userSelectedPassInfo());
+            System.out.println(String.format("%s. ", index + 1) + showPassInfo(pass));
         }
     }
 
     @Override
-    public void askLockerPass(String askLockerPass) {
+    public void askLockerPass(StudyCafeLockerPass askLockerPass) {
         System.out.println();
         String askMessage = String.format(
-            "사물함을 이용하시겠습니까? (%s)",
-            askLockerPass
+                "사물함을 이용하시겠습니까? (%s)",
+                showLockerPassInfo(askLockerPass)
         );
 
         System.out.println(askMessage);
@@ -47,29 +50,50 @@ public class ConsoleOutputHandler implements OutputHandler {
     }
 
     @Override
-    public void showPassOrderSummary(String selectedPass, String lockerPass, int discountPrice, int totalPrice) {
+    public void showPassOrderSummary(StudyCafePass selectedPass, StudyCafeLockerPass lockerPass, PassCost passCost) {
         System.out.println();
         System.out.println("이용 내역");
-        System.out.println("이용권: " + selectedPass);
+        System.out.println("이용권: " + showPassInfo(selectedPass));
 
-        if (userSelectLockerPassCheck(lockerPass)) {
-            System.out.println("사물함: " + lockerPass);
+        if (userSelectLockerPassCheck(lockerPass) && passCost.getExtraCost() > 0) {
+            System.out.println("사물함: " + showLockerPassInfo(lockerPass));
         }
 
-        if (hasDiscount(discountPrice)) {
-            System.out.println("이벤트 할인 금액: " + discountPrice + "원");
+        if (hasDiscount(passCost.getDiscountPrice())) {
+            System.out.println("이벤트 할인 금액: " + passCost.getDiscountPrice() + "원");
         }
 
-        System.out.println("총 결제 금액: " + totalPrice + "원");
+        System.out.println("총 결제 금액: " + passCost.getTotalPrice() + "원");
         System.out.println();
+    }
+
+    private String showLockerPassInfo(StudyCafeLockerPass lockerPass) {
+
+        if (lockerPass.getPrice() > 0) {
+            return String.format("%s주권 - %d원", lockerPass.getDuration(), lockerPass.getPrice());
+        }
+        return "";
+    }
+
+    private String showPassInfo(StudyCafePass selectedPass) {
+        if (selectedPass.isHourPass()) {
+            return String.format("%s시간권 - %d원", selectedPass.getDuration(), selectedPass.getPrice());
+        }
+        if (selectedPass.isWeeklyPass()) {
+            return String.format("%s주권 - %d원", selectedPass.getDuration(), selectedPass.getPrice());
+        }
+        if (selectedPass.isFixedPass()) {
+            return String.format("%s주권 - %d원", selectedPass.getDuration(), selectedPass.getPrice());
+        }
+        return "";
     }
 
     private boolean hasDiscount(int discountPrice) {
         return discountPrice > 0;
     }
 
-    private boolean userSelectLockerPassCheck(String lockerPass) {
-        return !lockerPass.isEmpty();
+    private boolean userSelectLockerPassCheck(StudyCafeLockerPass lockerPass) {
+        return lockerPass.getPrice() > 0;
     }
 
     @Override

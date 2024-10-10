@@ -19,9 +19,13 @@ public class StudyCafeLockerPasses {
         List<StudyCafeLockerPass> lockerPasses = new ArrayList<>(passes);
 
         return lockerPasses.stream()
-                .filter(option -> selectedPass.isSamePassType(option.getPassType()) && selectedPass.isSameDuration(option.getDuration()))
+                .filter(option -> isSameTypeAndDuration(selectedPass, option))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 입력입니다."));
+    }
+
+    private boolean isSameTypeAndDuration(StudyCafePass selectedPass, StudyCafeLockerPass option) {
+        return option.isSamePassType(selectedPass) && option.isSameDuration(selectedPass);
     }
 
 

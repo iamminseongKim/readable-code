@@ -19,7 +19,7 @@ public class StudyCafePasses {
         List<StudyCafePass> passesCopy = new ArrayList<>(passes);
 
         return passesCopy.stream()
-                .filter(pass -> pass.getPassType() == studyCafePassType)
+                .filter(pass -> pass.isSamePassType(studyCafePassType))
                 .toList();
     }
 }

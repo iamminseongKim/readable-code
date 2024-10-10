@@ -7,6 +7,7 @@ import cleancode.studycafe.misson.model.StudyCafeLockerPass;
 import cleancode.studycafe.misson.model.StudyCafeLockerPasses;
 import cleancode.studycafe.misson.model.StudyCafePass;
 import cleancode.studycafe.misson.model.StudyCafePasses;
+import cleancode.studycafe.misson.pass.PassServiceFactory;
 
 import java.util.List;
 
@@ -17,14 +18,13 @@ public class StudyCafeConfig {
     private final OutputHandler outputHandler;
     private final FileHandler cafePassFileHandler;
     private final FileHandler lockerFileHandler;
-    private final Caculate calculate;
 
-    public StudyCafeConfig(InputHandler inputHandler, OutputHandler outputHandler, FileHandler cafePassFileHandler, FileHandler lockerFileHandler, Caculate calculate) {
+
+    public StudyCafeConfig(InputHandler inputHandler, OutputHandler outputHandler, FileHandler cafePassFileHandler, FileHandler lockerFileHandler) {
         this.inputHandler = inputHandler;
         this.outputHandler = outputHandler;
         this.cafePassFileHandler = cafePassFileHandler;
         this.lockerFileHandler = lockerFileHandler;
-        this.calculate = calculate;
     }
 
     public InputHandler getInputHandler() {
@@ -35,9 +35,6 @@ public class StudyCafeConfig {
         return outputHandler;
     }
 
-    public Caculate getCalculate() {
-        return calculate;
-    }
 
     public StudyCafePasses getStudyCafePasses() {
         return StudyCafePasses.of((List<StudyCafePass>) cafePassFileHandler.readFileAndMakePasses());
@@ -45,6 +42,10 @@ public class StudyCafeConfig {
 
     public StudyCafeLockerPasses getLockerPasses() {
         return StudyCafeLockerPasses.of((List<StudyCafeLockerPass>) lockerFileHandler.readFileAndMakePasses());
+    }
+
+    public PassServiceFactory getPassServiceFactory() {
+        return new PassServiceFactory(getStudyCafePasses(), getLockerPasses());
     }
 
 }
