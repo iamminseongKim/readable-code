@@ -3,7 +3,7 @@ package cleancode.minesweeper.tobe.minesweeper.io.sign;
 import cleancode.minesweeper.tobe.minesweeper.board.cell.CellSnapshot;
 import cleancode.minesweeper.tobe.minesweeper.board.cell.CellSnapshotStatus;
 
-public class LandMinCellSignProvider implements CellSignProvidable{
+public class LandMinCellSignProvider implements CellSignProvidable {
 
     private static final String LAND_MINE_SIGN = "☼";
 

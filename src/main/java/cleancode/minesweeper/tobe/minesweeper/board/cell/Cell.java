@@ -3,7 +3,6 @@ package cleancode.minesweeper.tobe.minesweeper.board.cell;
 public interface Cell {
 
 
-
     boolean hasLandMineCount();
 
     CellSnapshot getSnapshot();

@@ -3,7 +3,6 @@ package cleancode.minesweeper.tobe.minesweeper.board.cell;
 public class LandMineCell implements Cell {
 
 
-
     private final CellState cellState = CellState.initialize();
 
     @Override
