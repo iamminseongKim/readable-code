@@ -145,23 +145,23 @@ public class GameBoard {
         board[position.getRowIndex()][position.getColIndex()] = cell;
     }
 
-    private void openSurroundedCellsOld(CellPosition cellPosition) {
-        if (isOpenedCell(cellPosition)) {
-            return;
-        }
-        if (isLandMineCellAt(cellPosition)) {
-            return;
-        }
-
-        openOneCellAt(cellPosition);
-
-        if (doesCellHaveLandMineCount(cellPosition)) {
-            return;
-        }
-
-        List<CellPosition> surroundedPositions = calculateSurroundedPositions(cellPosition, getRowSize(), getColSize());
-        surroundedPositions.forEach(this::openSurroundedCellsOld);
-    }
+//    private void openSurroundedCellsOld(CellPosition cellPosition) {
+//        if (isOpenedCell(cellPosition)) {
+//            return;
+//        }
+//        if (isLandMineCellAt(cellPosition)) {
+//            return;
+//        }
+//
+//        openOneCellAt(cellPosition);
+//
+//        if (doesCellHaveLandMineCount(cellPosition)) {
+//            return;
+//        }
+//
+//        List<CellPosition> surroundedPositions = calculateSurroundedPositions(cellPosition, getRowSize(), getColSize());
+//        surroundedPositions.forEach(this::openSurroundedCellsOld);
+//    }
 
     private void openSurroundedCells(CellPosition cellPosition) {
         Deque<CellPosition> deque = new ArrayDeque<>();
