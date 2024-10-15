@@ -48,7 +48,7 @@ public class GameBoard {
             return;
         }
 
-        openSurroundedCells2(cellPosition);
+        openSurroundedCells(cellPosition);
         checkIfGameIsOver();
     }
 
@@ -145,7 +145,7 @@ public class GameBoard {
         board[position.getRowIndex()][position.getColIndex()] = cell;
     }
 
-    private void openSurroundedCells(CellPosition cellPosition) {
+    private void openSurroundedCellsOld(CellPosition cellPosition) {
         if (isOpenedCell(cellPosition)) {
             return;
         }
@@ -160,10 +160,10 @@ public class GameBoard {
         }
 
         List<CellPosition> surroundedPositions = calculateSurroundedPositions(cellPosition, getRowSize(), getColSize());
-        surroundedPositions.forEach(this::openSurroundedCells);
+        surroundedPositions.forEach(this::openSurroundedCellsOld);
     }
 
-    private void openSurroundedCells2(CellPosition cellPosition) {
+    private void openSurroundedCells(CellPosition cellPosition) {
         Deque<CellPosition> deque = new ArrayDeque<>();
 
         deque.push(cellPosition);

@@ -27,7 +27,7 @@ public class CellSnapshot {
     }
 
     public static CellSnapshot ofNumber(int nearbyLandMineCount) {
-        return new CellSnapshot(CellSnapshotStatus.NUMBER, nearbyLandMineCount);
+        return of(CellSnapshotStatus.NUMBER, nearbyLandMineCount);
     }
 
     public static CellSnapshot ofUnchecked() {
